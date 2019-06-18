@@ -27,6 +27,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.kie.api.task.TaskEvent;
+
 
 import org.drools.core.impl.EnvironmentFactory;
 import org.jbpm.services.task.deadlines.NotificationListener;
@@ -485,7 +488,14 @@ public abstract class DeadlinesBaseTest extends HumanTaskServicesBaseTest {
 
           taskService.addTask(task, inputVars);
 
-          CountDownTaskEventListener countDownListener = new CountDownTaskEventListener(1, true, false);
+        AtomicInteger timersTriggeredCount = new AtomicInteger();
+        CountDownTaskEventListener countDownListener = new CountDownTaskEventListener(1, true, false) {
+            @Override
+            public void afterTaskReassignedEvent(TaskEvent event) {
+                super.afterTaskReassignedEvent(event);
+                timersTriggeredCount.incrementAndGet();
+            }
+        };
           addCountDownListner(countDownListener);
 
           long taskId = task.getId();
@@ -505,6 +515,9 @@ public abstract class DeadlinesBaseTest extends HumanTaskServicesBaseTest {
 
               task = taskService.getTaskById(taskId);
               assertThat(task.getTaskData().getActualOwner()).as("Task was not reclaimed").isNull();
+
+        assertThat(timersTriggeredCount).as("Some deadlines have fired more than once!").hasValue(3);
+
           }
           taskService.claim(taskId, "Bobba Fet");
           taskService.start(taskId, "Bobba Fet");
@@ -525,7 +538,14 @@ public abstract class DeadlinesBaseTest extends HumanTaskServicesBaseTest {
 
           taskService.addTask(task, inputVars);
 
-          CountDownTaskEventListener countDownListener = new CountDownTaskEventListener(1, true, false);
+        AtomicInteger timersTriggeredCount = new AtomicInteger();
+        CountDownTaskEventListener countDownListener = new CountDownTaskEventListener(1, true, false) {
+            @Override
+            public void afterTaskReassignedEvent(TaskEvent event) {
+                super.afterTaskReassignedEvent(event);
+                timersTriggeredCount.incrementAndGet();
+            }
+        };
           addCountDownListner(countDownListener);
 
           long taskId = task.getId();
@@ -548,6 +568,60 @@ public abstract class DeadlinesBaseTest extends HumanTaskServicesBaseTest {
               task = (InternalTask) taskService.getTaskById(taskId);
               assertThat(task.getTaskData().getActualOwner()).as("Task was not reclaimed").isNull();
           }
+
+        assertThat(timersTriggeredCount).as("Some deadlines have fired more than once!").hasValue(3);
+
+        taskService.claim(taskId, "Bobba Fet");
+        taskService.start(taskId, "Bobba Fet");
+        taskService.complete(taskId, "Bobba Fet", Collections.<String, Object>emptyMap());
+    }
+
+    @Test(timeout = 10000)
+    public void testTaskNotCompletedReassignBounded() throws Exception {
+        Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithMultipleReassignment));
+        Map<String, Object> vars = new HashMap<String, Object>();
+        vars.put("now", new Date());
+        InternalTask task = (InternalTask) TaskFactory.evalTask(reader, vars);
+
+        Environment environment = EnvironmentFactory.newEnvironment();
+        Map<String, Object> inputVars = new HashMap<String, Object>();
+        inputVars.put("NotCompletedReassign", "[users:Tony Stark,Bobba Fet,Jabba Hutt|groups:]@[R3/PT2S]");
+        ((InternalTask) task).setDeadlines(HumanTaskHandlerHelper.setDeadlines(inputVars, Collections.emptyList(), environment, false));
+
+        taskService.addTask(task, inputVars);
+
+        AtomicInteger timersTriggeredCount = new AtomicInteger();
+        CountDownTaskEventListener countDownListener = new CountDownTaskEventListener(1, true, false) {
+            @Override
+            public void afterTaskReassignedEvent(TaskEvent event) {
+                super.afterTaskReassignedEvent(event);
+                timersTriggeredCount.incrementAndGet();
+            }
+        };
+        addCountDownListner(countDownListener);
+
+        long taskId = task.getId();
+
+        String []owners = new String[] {
+                "Tony Stark", "Bobba Fet", "Jabba Hutt"
+        };
+
+        for(String owner : owners) {
+            countDownListener.reset(1);
+
+            taskService.claim(taskId, owner);
+            task = (InternalTask) taskService.getTaskById(taskId);
+            assertThat(task.getTaskData().getActualOwner().getId()).isEqualTo(owner);
+
+            taskService.start(taskId, owner);
+
+            countDownListener.waitTillCompleted();
+
+            task = (InternalTask) taskService.getTaskById(taskId);
+            assertThat(task.getTaskData().getActualOwner()).as("Task was not reclaimed").isNull();
+        }
+
+        assertThat(timersTriggeredCount).as("Some deadlines have fired more than once!").hasValue(3);
 
           taskService.claim(taskId, "Bobba Fet");
           taskService.start(taskId, "Bobba Fet");
