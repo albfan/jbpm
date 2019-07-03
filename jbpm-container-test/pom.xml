@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.jbpm</groupId>
     <artifactId>jbpm</artifactId>
-    <version>7.23.1.20190627-prod</version>
+    <version>7.23.0.Final-redhat-00002</version>
   </parent>
 
   <artifactId>jbpm-container-test</artifactId>
@@ -17,7 +15,7 @@
   <description>jBPM Container Test</description>
 
   <properties>
-    <maven.deploy.skip>true</maven.deploy.skip>
+    <maven.deploy.skip>false</maven.deploy.skip>
 
     <!-- Datasource properties -->
     <org.jbpm.persistence.dialect>org.hibernate.dialect.H2Dialect</org.jbpm.persistence.dialect>
@@ -26,11 +24,11 @@
     <org.jbpm.datasource.password></org.jbpm.datasource.password>
     <org.jbpm.datasource.driver.class>org.h2.jdbcx.JdbcDataSource</org.jbpm.datasource.driver.class>
     <org.jbpm.datasource.driver.jdbc.class>org.h2.Driver</org.jbpm.datasource.driver.jdbc.class>
-    <org.jbpm.datasource.hostname/>
-    <org.jbpm.datasource.port/>
-    <org.jbpm.datasource.dbName/>
-    <org.jbpm.persistence.schema/>
-    <org.jbpm.persistence.ds/>
+    <org.jbpm.datasource.hostname></org.jbpm.datasource.hostname>
+    <org.jbpm.datasource.port></org.jbpm.datasource.port>
+    <org.jbpm.datasource.dbName></org.jbpm.datasource.dbName>
+    <org.jbpm.persistence.schema></org.jbpm.persistence.schema>
+    <org.jbpm.persistence.ds></org.jbpm.persistence.ds>
     <hibernate.hbm2ddl.auto>create-drop</hibernate.hbm2ddl.auto>
 
     <!-- Common container-related properties -->

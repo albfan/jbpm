@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.jbpm</groupId>
     <artifactId>jbpm-in-container-test</artifactId>
-    <version>7.23.1.20190627-prod</version>
+    <version>7.23.0.Final-redhat-00002</version>
   </parent>
 
   <artifactId>jbpm-container-test-suite</artifactId>
@@ -17,11 +15,9 @@
   <description>jBPM Container Test Suite</description>
 
   <properties>
-    <surefire.arg.line>
-      -Dfile.encoding=${project.build.sourceEncoding}
+    <surefire.arg.line>-Dfile.encoding=${project.build.sourceEncoding}
       -Xms256m
-      -Xmx1024m
-    </surefire.arg.line>
+      -Xmx1024m</surefire.arg.line>
     <wsdl.token>?wsdl</wsdl.token>
 
 
@@ -447,10 +443,10 @@
                      See https://wiki.apache.org/tomcat/HowTo/FasterStartUp#Entropy_Source for more info -->
                 <java.security.egd>file:/dev/./urandom</java.security.egd>
               </systemProperties>
-              <dependencies combine.children="append"/>
+              <dependencies combine.children="append"></dependencies>
               <output>${container.log.file}</output>
             </container>
-            <deployables combine.children="append"/>
+            <deployables combine.children="append"></deployables>
             <configuration>
               <home>${container.profile.dir}</home>
               <properties>
@@ -586,14 +582,12 @@
                     <cargo.jboss.configuration>standalone-full</cargo.jboss.configuration>
                     <cargo.jvmargs>-Xmx1g</cargo.jvmargs>
                     <!-- Datasource -->
-                    <cargo.datasource.datasource.jbpm>
-                      cargo.datasource.driver=${org.jbpm.datasource.driver.class}|
+                    <cargo.datasource.datasource.jbpm>cargo.datasource.driver=${org.jbpm.datasource.driver.class}|
                       cargo.datasource.url=${org.jbpm.datasource.connection.url}|
                       cargo.datasource.jndi=${org.jbpm.persistence.ds}|
                       cargo.datasource.username=${org.jbpm.datasource.username}|
                       cargo.datasource.password=${org.jbpm.datasource.password}|
-                      cargo.datasource.transactionsupport=XA_TRANSACTION
-                    </cargo.datasource.datasource.jbpm>
+                      cargo.datasource.transactionsupport=XA_TRANSACTION</cargo.datasource.datasource.jbpm>
                   </properties>
                 </configuration>
               </configuration>
@@ -668,14 +662,12 @@
                     <cargo.jboss.configuration>standalone-full</cargo.jboss.configuration>
                     <cargo.jvmargs>-Xmx1024m</cargo.jvmargs>
                     <!-- Datasource -->
-                    <cargo.datasource.datasource.jbpm>
-                      cargo.datasource.driver=${org.jbpm.datasource.driver.class}|
+                    <cargo.datasource.datasource.jbpm>cargo.datasource.driver=${org.jbpm.datasource.driver.class}|
                       cargo.datasource.url=${org.jbpm.datasource.connection.url}|
                       cargo.datasource.jndi=${org.jbpm.persistence.ds}|
                       cargo.datasource.username=${org.jbpm.datasource.username}|
                       cargo.datasource.password=${org.jbpm.datasource.password}|
-                      cargo.datasource.transactionsupport=XA_TRANSACTION
-                    </cargo.datasource.datasource.jbpm>
+                      cargo.datasource.transactionsupport=XA_TRANSACTION</cargo.datasource.datasource.jbpm>
                   </properties>
                 </configuration>
               </configuration>
@@ -796,8 +788,7 @@
                   <properties>
                     <cargo.jvmargs>-Xmx1024m</cargo.jvmargs>
                     <cargo.start.jvmargs>-Dcom.sun.management.jmxremote.port=8089
-                      -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false
-                    </cargo.start.jvmargs>
+                      -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false</cargo.start.jvmargs>
                   </properties>
                   <users>
                     <!-- needed by Arquillian for EWS -->
@@ -918,14 +909,12 @@
                   <properties>
                     <cargo.jvmargs>-Xmx1024m</cargo.jvmargs>
                     <!-- Datasource -->
-                    <cargo.datasource.datasource.jbpm>
-                      cargo.datasource.driver=${org.jbpm.datasource.driver.class}|
+                    <cargo.datasource.datasource.jbpm>cargo.datasource.driver=${org.jbpm.datasource.driver.class}|
                       cargo.datasource.url=${org.jbpm.datasource.connection.url}|
                       cargo.datasource.jndi=${org.jbpm.persistence.ds}|
                       cargo.datasource.username=${org.jbpm.datasource.username}|
                       cargo.datasource.password=${org.jbpm.datasource.password}|
-                      cargo.datasource.transactionsupport=XA_TRANSACTION
-                    </cargo.datasource.datasource.jbpm>
+                      cargo.datasource.transactionsupport=XA_TRANSACTION</cargo.datasource.datasource.jbpm>
                   </properties>
                 </configuration>
               </configuration>
@@ -1030,15 +1019,13 @@
                     <cargo.websphere.classloader.mode>PARENT_LAST</cargo.websphere.classloader.mode>
                     <cargo.websphere.war.classloader.policy>SINGLE</cargo.websphere.war.classloader.policy>
                     <!-- Datasource -->
-                    <cargo.datasource.datasource.jbpm>
-                      cargo.datasource.driver=${org.jbpm.datasource.driver.class}|
+                    <cargo.datasource.datasource.jbpm>cargo.datasource.driver=${org.jbpm.datasource.driver.class}|
                       cargo.datasource.url=${org.jbpm.datasource.connection.url}|
                       cargo.datasource.jndi=${org.jbpm.persistence.ds}|
                       cargo.datasource.username=${org.jbpm.datasource.username}|
                       cargo.datasource.password=${org.jbpm.datasource.password}|
                       cargo.datasource.transactionsupport=XA_TRANSACTION
-                      cargo.datasource.properties=serverName=${org.jbpm.datasource.hostname};port=${org.jbpm.datasource.port};portNumber=${org.jbpm.datasource.port};databaseName=${org.jbpm.datasource.dbName};currentSchema=${org.jbpm.persistence.schema};driverType=4
-                    </cargo.datasource.datasource.jbpm>
+                      cargo.datasource.properties=serverName=${org.jbpm.datasource.hostname};port=${org.jbpm.datasource.port};portNumber=${org.jbpm.datasource.port};databaseName=${org.jbpm.datasource.dbName};currentSchema=${org.jbpm.persistence.schema};driverType=4</cargo.datasource.datasource.jbpm>
                   </properties>
                 </configuration>
               </configuration>
