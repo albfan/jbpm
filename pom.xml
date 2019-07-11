@@ -149,13 +149,6 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-platform-bom</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
         <groupId>org.jbpm</groupId>
         <artifactId>jbpm-test-util</artifactId>
         <version>7.23.0.Final-redhat-00002</version>
