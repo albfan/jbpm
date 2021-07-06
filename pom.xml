@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.kie</groupId>
         <artifactId>kie-parent</artifactId>
-        <version>7.52.1-SNAPSHOT</version>
+        <version>7.52.0.Final-redhat-00008</version>
         <!-- relativePath causes out-of-date problems on hudson slaves -->
         <!--<relativePath>../droolsjbpm-build-bootstrap/pom.xml</relativePath>-->
     </parent>
@@ -14,6 +13,7 @@
     <groupId>org.jbpm</groupId>
     <artifactId>jbpm</artifactId>
     <packaging>pom</packaging>
+    <version>7.52.0.Final-redhat-00008</version>
 
     <name>jBPM :: Multiproject</name>
     <description>jBPM: a Business Process Management (BPM) Suite</description>
@@ -27,10 +27,10 @@
         <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
         <maven.datasource.classname>org.h2.jdbcx.JdbcDataSource</maven.datasource.classname>
         <maven.jdbc.driver.class>org.h2.Driver</maven.jdbc.driver.class>
-        <maven.jdbc.db.name/>
-        <maven.jdbc.db.port/>
-        <maven.jdbc.db.server/>
-        <maven.jdbc.driver.jar/>
+        <maven.jdbc.db.name />
+        <maven.jdbc.db.port />
+        <maven.jdbc.db.server />
+        <maven.jdbc.driver.jar />
         <maven.jdbc.username>sa</maven.jdbc.username>
         <maven.jdbc.password>sasa</maven.jdbc.password>
         <maven.jdbc.url>jdbc:h2:mem:jbpm-db;MVCC=true</maven.jdbc.url>
@@ -57,25 +57,12 @@
 \*\/$
 ]]>
         </checkstyle.header.template>
-        <jacoco.agent.line/>
+        <jacoco.agent.line />
     </properties>
 
     <repositories>
         <!-- Bootstrap repository to locate the parent pom when the parent pom has not been build locally. -->
-        <repository>
-            <id>jboss-public-repository-group</id>
-            <name>JBoss Public Repository Group</name>
-            <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-            <layout>default</layout>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-            </snapshots>
-        </repository>
+        
     </repositories>
 
     <scm>
@@ -139,8 +126,8 @@
                                 <checkstyleRules>
                                     <module name="Checker">
                                         <module name="RegexpHeader">
-                                            <property name="header" value="${checkstyle.header.template}"/>
-                                            <property name="fileExtensions" value="${checkstyle.header.extensions}"/>
+                                            <property name="header" value="${checkstyle.header.template}" />
+                                            <property name="fileExtensions" value="${checkstyle.header.extensions}" />
                                         </module>
                                     </module>
                                 </checkstyleRules>
@@ -157,7 +144,7 @@
             <dependency>
                 <groupId>org.jbpm</groupId>
                 <artifactId>jbpm-test-util</artifactId>
-                <version>${project.version}</version>
+                <version>7.52.0.Final-redhat-00008</version>
             </dependency>
             <dependency>
                 <groupId>simple-jndi</groupId>
@@ -222,7 +209,7 @@
                 <maven.jdbc.driver.class>org.mariadb.jdbc.Driver</maven.jdbc.driver.class>
                 <maven.jdbc.db.name>mysql</maven.jdbc.db.name>
                 <maven.jdbc.db.port>3306</maven.jdbc.db.port>
-                <maven.jdbc.driver.jar/>
+                <maven.jdbc.driver.jar />
                 <maven.jdbc.username>root</maven.jdbc.username>
                 <maven.jdbc.password>admin1234</maven.jdbc.password>
                 <maven.jdbc.url>jdbc:mariadb://localhost:3306/mysql?pinGlobalTxToPhysicalConnection=true
@@ -293,3 +280,6 @@
     </profiles>
 
 </project>
+<!--
+Modified by POM Manipulation Extension for Maven 4.3 ( SHA: 64c39a8c )
+-->
