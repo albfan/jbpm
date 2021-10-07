@@ -25,11 +25,14 @@ import org.jbpm.runtime.manager.impl.factory.JPASessionFactory;
 import org.jbpm.runtime.manager.impl.factory.LocalTaskServiceFactory;
 import org.jbpm.runtime.manager.impl.tx.NoTransactionalTimerResourcesCleanupAwareSchedulerServiceInterceptor;
 import org.jbpm.runtime.manager.impl.tx.TransactionAwareSchedulerServiceInterceptor;
+import org.jbpm.services.task.impl.TaskDeadlinesServiceImpl;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.SessionFactory;
 import org.kie.internal.runtime.manager.TaskServiceFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is the main entry point class for the RuntimeManager module responsible for delivering <code>RuntimeManager</code>
@@ -48,7 +51,8 @@ import org.kie.internal.runtime.manager.TaskServiceFactory;
  *
  */
 public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
-    
+
+    private static Logger logger = LoggerFactory.getLogger(RuntimeManagerFactoryImpl.class);
 
     @Override
     public RuntimeManager newSingletonRuntimeManager(RuntimeEnvironment environment) {
@@ -141,6 +145,7 @@ public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
     }
     
     protected void initTimerService(RuntimeEnvironment environment, RuntimeManager manager) {
+        logger.trace("Initialize timer service for runtime {}", manager.getIdentifier());
         if (environment instanceof SchedulerProvider) {
             GlobalSchedulerService schedulerService = ((SchedulerProvider) environment).getSchedulerService();  
             if (schedulerService != null) {
@@ -158,6 +163,7 @@ public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
                 }
             }
         }
+        TaskDeadlinesServiceImpl.start();
     }
     
 
