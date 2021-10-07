@@ -35,7 +35,10 @@ import org.jbpm.runtime.manager.api.SchedulerProvider;
 import org.jbpm.runtime.manager.impl.error.DefaultExecutionErrorStorage;
 import org.jbpm.runtime.manager.impl.error.ExecutionErrorManagerImpl;
 import org.jbpm.runtime.manager.impl.tx.NoOpTransactionManager;
+import org.jbpm.runtime.manager.impl.tx.NoTransactionalTimerResourcesCleanupAwareSchedulerServiceInterceptor;
+import org.jbpm.runtime.manager.impl.tx.TransactionAwareSchedulerServiceInterceptor;
 import org.jbpm.services.task.impl.TaskContentRegistry;
+import org.jbpm.services.task.impl.TaskDeadlinesServiceImpl;
 import org.jbpm.services.task.impl.command.CommandBasedTaskService;
 import org.jbpm.services.task.wih.ExternalTaskEventListener;
 import org.kie.api.event.process.ProcessEventListener;
@@ -55,8 +58,6 @@ import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.error.ExecutionErrorManager;
 import org.kie.internal.runtime.error.ExecutionErrorStorage;
 import org.kie.internal.runtime.manager.CacheManager;
-import org.kie.internal.runtime.manager.Disposable;
-import org.kie.internal.runtime.manager.DisposeListener;
 import org.kie.internal.runtime.manager.InternalRegisterableItemsFactory;
 import org.kie.internal.runtime.manager.InternalRuntimeEngine;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
@@ -129,7 +130,7 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
         ((SimpleRuntimeEnvironment)environment).getEnvironmentTemplate().set(EnvironmentName.EXEC_ERROR_MANAGER, executionErrorManager);
         logger.info("{} is created for {}", this.getClass().getSimpleName(), identifier);
     }
-    
+
     private void internalSetDeploymentDescriptor() {
     	this.deploymentDescriptor = (DeploymentDescriptor) ((SimpleRuntimeEnvironment)environment).getEnvironmentTemplate().get("KieDeploymentDescriptor");
     	if (this.deploymentDescriptor == null) {
@@ -141,9 +142,38 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     	this.kieContainer = (KieContainer) ((SimpleRuntimeEnvironment)environment).getEnvironmentTemplate().get("KieContainer");
 	}
 
-	public abstract void init();
-    
-	protected void registerItems(RuntimeEngine runtime) {
+    public void init() {
+        if (!isUseLocking()) {
+            runtimeManagerLockStrategy = lockStrategyFactory.createFreeLockStrategy();
+        } else {
+            runtimeManagerLockStrategy = lockStrategyFactory.createLockStrategy(identifier);
+        }
+        initTimerService();
+    }
+	
+    protected void initTimerService() {
+        logger.trace("Initialize timer service for runtime {}", getIdentifier());
+        if (environment instanceof SchedulerProvider) {
+            GlobalSchedulerService schedulerService = ((SchedulerProvider) environment).getSchedulerService();  
+            if (schedulerService != null) {
+                TimerService globalTs = new GlobalTimerService(this, schedulerService);
+                String timerServiceId = getIdentifier()  + TimerServiceRegistry.TIMER_SERVICE_SUFFIX;
+                // and register it in the registry under 'default' key
+                TimerServiceRegistry.getInstance().registerTimerService(timerServiceId, globalTs);
+                ((SimpleRuntimeEnvironment)environment).addToConfiguration("drools.timerService", 
+                        "new org.jbpm.process.core.timer.impl.RegisteredTimerServiceDelegate(\""+timerServiceId+"\")");
+                
+                if (!schedulerService.isTransactional()) {
+                    schedulerService.setInterceptor(new TransactionAwareSchedulerServiceInterceptor(environment, this, schedulerService));
+                } else {
+                    schedulerService.setInterceptor(new NoTransactionalTimerResourcesCleanupAwareSchedulerServiceInterceptor(environment, this, schedulerService));
+                }
+            }
+        }
+        TaskDeadlinesServiceImpl.start();
+    }
+ 
+    protected void registerItems(RuntimeEngine runtime) {
         RegisterableItemsFactory factory = environment.getRegisterableItemsFactory();
         KieSession ksession = ((InternalRuntimeEngine) runtime).internalGetKieSession();
         // process handlers
