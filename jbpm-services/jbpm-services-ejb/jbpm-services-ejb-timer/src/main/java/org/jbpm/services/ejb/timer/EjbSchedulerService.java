@@ -138,7 +138,7 @@ public class EjbSchedulerService implements GlobalSchedulerService {
 	
    private boolean isNewTimer(JobContext ctx) {
 
-        boolean isNewTimer = true;
+        boolean isNewTimer = false;
         if (ctx instanceof ProcessJobContext) {
             ProcessJobContext processCtx = (ProcessJobContext) ctx;
             isNewTimer = processCtx.isNewTimer();
