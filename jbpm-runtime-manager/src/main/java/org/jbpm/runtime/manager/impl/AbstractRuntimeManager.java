@@ -35,7 +35,6 @@ import org.jbpm.runtime.manager.api.SchedulerProvider;
 import org.jbpm.runtime.manager.impl.error.DefaultExecutionErrorStorage;
 import org.jbpm.runtime.manager.impl.error.ExecutionErrorManagerImpl;
 import org.jbpm.runtime.manager.impl.tx.NoOpTransactionManager;
-import org.jbpm.runtime.manager.impl.tx.NoTransactionalTimerResourcesCleanupAwareSchedulerServiceInterceptor;
 import org.jbpm.runtime.manager.impl.tx.TransactionAwareSchedulerServiceInterceptor;
 import org.jbpm.services.task.impl.TaskContentRegistry;
 import org.jbpm.services.task.impl.TaskDeadlinesServiceImpl;
@@ -143,11 +142,6 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
 	}
 
     public void init() {
-        if (!isUseLocking()) {
-            runtimeManagerLockStrategy = lockStrategyFactory.createFreeLockStrategy();
-        } else {
-            runtimeManagerLockStrategy = lockStrategyFactory.createLockStrategy(identifier);
-        }
         initTimerService();
     }
 	
@@ -165,8 +159,6 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
                 
                 if (!schedulerService.isTransactional()) {
                     schedulerService.setInterceptor(new TransactionAwareSchedulerServiceInterceptor(environment, this, schedulerService));
-                } else {
-                    schedulerService.setInterceptor(new NoTransactionalTimerResourcesCleanupAwareSchedulerServiceInterceptor(environment, this, schedulerService));
                 }
             }
         }
